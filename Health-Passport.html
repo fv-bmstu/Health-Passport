@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Выбор даты</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: #1C2331;
+            color: #B2BABB;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input[type="date"], select {
+            font-size: 18px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #3E8E41;
+        }
+        a {
+            color: #B2BABB;
+        }
+        #output {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #status {
+            font-size: 18px;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+        /* Стили для мобильных устройств */
+        @media (max-width: 600px) {
+            body {
+                font-size: 18px;
+            }
+        }
+        #description {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        #author {
+            font-size: 14px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p id="description">Здесь можно узнать,<br>пора ли становиться в очередь в поликлинике😀<br><br></p>
+        <h1>Укажите дату получения ПЗ<br>и группу здоровья</h1>
+        <input type="date" id="dateInput"><br><br>
+        <select id="healthGroup">
+            <option value="Основная">Основная и подготовительная</option>
+            <option value="Специальная">Специальная</option>
+        </select><br><br>
+        <button onclick="addYear()">Рассчитать</button>
+        <p id="output"></p>
+        <p id="status"></p>
+        <p id="output"></p>
+        <p id="status"></p>
+        <p id="link"></p>
+        <p id="author">Автор идеи:<br>Умаров Мурад Мухамедович<br>Доцент кафедры «Физическое воспитание»<br>ФОФ МГТУ им. Н. Э. Баумана<br><br>Группа Мурада Мухамедовича в telegram:<br><a href='https://t.me/umarovbmstu'>Умаров МГТУ спорт</a><br><br>По вопросам или предложениям<br>писать в telegram разработчику:<br><a href='https://t.me/goodtimecharli'>@goodtimecharli</a></p>
+    </div>
+
+    <script>
+         function addYear() {
+             var dateInput = document.getElementById("dateInput").value;
+
+             // Создание объекта Date с использованием метода split()
+             var dateParts = dateInput.split("-");
+             var year = parseInt(dateParts[0]);
+             var monthIndex = parseInt(dateParts[1]) - 1; // Месяцы начинаются с нуля
+             var day = parseInt(dateParts[2]);
+             var date = new Date(year, monthIndex, day);
+	     var validDate = new Date("2023-09-01");
+
+             // Получение выбранной группы здоровья
+             var healthGroup = document.getElementById("healthGroup").value;
+
+             // Прибавление времени в зависимости от выбранной группы здоровья
+	     if (date > validDate) {
+             date.setFullYear(date.getFullYear() + 1);
+             } else if (healthGroup === "Основная") {
+             date.setMonth(date.getMonth() + 18);
+             } else if (healthGroup === "Специальная") {
+             date.setFullYear(date.getFullYear() + 1);
+             }
+
+             // Форматирование даты
+             var day = date.getDate();
+             var month = date.getMonth() + 1;
+             var year = date.getFullYear();
+             var formattedDate = day + "." + month + "." + year;
+
+             // Вычисление количества дней между датами
+             var currentDate = new Date();
+             var timeDiff = date.getTime() - currentDate.getTime();
+             var daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+             var output = document.getElementById("output");
+             output.innerHTML = "Ваш паспорт действует до " + formattedDate + " (" + daysDiff + " д.)";
+
+             // Вывод сообщения о статусе паспорта
+             var status = document.getElementById("status");
+             var link = document.getElementById("link");
+             if (daysDiff <= 0) {
+                 status.innerHTML = "Паспорт просрочен";
+                 status.style.backgroundColor = "red";
+                 link.innerHTML = "Узнать, как продлить паспорт здоровья можно по <a href='http://health.bmstu.ru/students/'>ссылке</a>";
+             } else if (daysDiff > 0 && daysDiff <= 14) {
+                 status.innerHTML = "Паспорт скоро пора обновлять";
+                 status.style.backgroundColor = "orange";
+                 link.innerHTML = "Узнать, как продлить паспорт здоровья можно по <a href='http://health.bmstu.ru/students/'>ссылке</a>";
+             } else {
+                 status.innerHTML = "Паспорт действителен";
+                 status.style.backgroundColor = "green";
+                 link.innerHTML = "";
+             }
+        }
+    </script>
+</body>
+</html>
